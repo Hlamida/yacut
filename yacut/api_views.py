@@ -34,7 +34,7 @@ def add_link():
             )
 
         if URLMap.query.filter_by(short=custom_id).first():
-            raise InvalidAPIUsage('Имя уже занято')
+            raise InvalidAPIUsage(f'Имя {custom_id} уже занято!')
 
     else:
         custom_id = get_unique_short_id()
