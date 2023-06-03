@@ -38,7 +38,6 @@ def add_link():
 
     else:
         custom_id = get_unique_short_id()
-
     result_link = URLMap(original=original, short=custom_id)
     db.session.add(result_link)
     db.session.commit()
