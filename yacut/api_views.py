@@ -15,9 +15,10 @@ from .utils import get_unique_short_id
 def add_link() -> Tuple[Any, int]:
     """Добавляет ссылку по API."""
 
-    data = request.get_json()
-    if not data:
-        raise InvalidAPIUsage('Запрос пуст')
+    try:
+        data = request.get_json()
+    except:
+        raise InvalidAPIUsage('Отсутствует тело запроса')
 
     original = data.get('url')
     if not original:
