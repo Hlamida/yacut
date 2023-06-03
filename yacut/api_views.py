@@ -6,7 +6,7 @@ from flask import jsonify, request
 
 from . import app, db
 from .constants import REGEX_PATTERN, USER_LINK_LENGHT
-from .error_handlers import InvalidAPIUsage
+from .error_handlers import InvalidAPIUsageError
 from .models import URLMap
 from .utils import get_unique_short_id
 
@@ -18,23 +18,23 @@ def add_link():
     try:
         data = request.get_json()
     except Exception:
-        raise InvalidAPIUsage('Отсутствует тело запроса')
+        raise InvalidAPIUsageError('Отсутствует тело запроса')
 
     original = data.get('url')
     if not original:
-        raise InvalidAPIUsage('"url" является обязательным полем!')
+        raise InvalidAPIUsageError('"url" является обязательным полем!')
 
     custom_id = data.get('custom_id')
     if custom_id:
         if len(custom_id) > USER_LINK_LENGHT or not re.match(
             REGEX_PATTERN, custom_id,
         ):
-            raise InvalidAPIUsage(
+            raise InvalidAPIUsageError(
                 'Указано недопустимое имя для короткой ссылки'
             )
 
         if URLMap.query.filter_by(short=custom_id).first():
-            raise InvalidAPIUsage(f'Имя "{custom_id}" уже занято.')
+            raise InvalidAPIUsageError(f'Имя "{custom_id}" уже занято.')
 
     else:
         custom_id = get_unique_short_id()
@@ -51,6 +51,6 @@ def get_original_url(short) -> Tuple[Any, int]:
 
     original_url = URLMap.query.filter_by(short=short).first()
     if not original_url:
-        raise InvalidAPIUsage('Указанный id не найден', HTTPStatus.NOT_FOUND)
+        raise InvalidAPIUsageError('Указанный id не найден', HTTPStatus.NOT_FOUND)
 
     return jsonify({'url': original_url.original}), HTTPStatus.OK
