@@ -11,6 +11,6 @@ def get_unique_short_id() -> str:
 
     return ''.join(
         secrets.choice(
-         letters_and_digits
+           letters_and_digits
         ) for i in range(SHORT_LINK_LENGTH)
     )

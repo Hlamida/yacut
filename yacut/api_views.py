@@ -12,12 +12,12 @@ from .utils import get_unique_short_id
 
 
 @app.route('/api/id/', methods=['POST'])
-def add_link() -> Tuple[Any, int]:
+def add_link():
     """Добавляет ссылку по API."""
 
     try:
         data = request.get_json()
-    except:
+    except BaseException:
         raise InvalidAPIUsage('Отсутствует тело запроса')
 
     original = data.get('url')
