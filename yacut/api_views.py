@@ -17,7 +17,7 @@ def add_link():
 
     try:
         data = request.get_json()
-    except BaseException:
+    except Exception:
         raise InvalidAPIUsage('Отсутствует тело запроса')
 
     original = data.get('url')
@@ -34,7 +34,7 @@ def add_link():
             )
 
         if URLMap.query.filter_by(short=custom_id).first():
-            raise InvalidAPIUsage(f'Имя {custom_id} уже занято!')
+            raise InvalidAPIUsage(f'Имя {custom_id} уже занято.')
 
     else:
         custom_id = get_unique_short_id()
