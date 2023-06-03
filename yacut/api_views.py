@@ -15,11 +15,15 @@ from .utils import get_unique_short_id
 def add_link():
     """Добавляет ссылку по API."""
 
-    try:
-        data = request.get_json()
-    except Exception:
+    #try:
+    #    data = request.get_json()
+    #except Exception:
+    #    raise InvalidAPIUsageError('Отсутствует тело запроса')
+#
+    if request.get_json() is None:
         raise InvalidAPIUsageError('Отсутствует тело запроса')
 
+    data = request.get_json()
     original = data.get('url')
     if not original:
         raise InvalidAPIUsageError('"url" является обязательным полем!')
