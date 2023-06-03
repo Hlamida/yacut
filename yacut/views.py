@@ -18,7 +18,7 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         custom_id = form.custom_id.data
 
         if URLMap.query.filter_by(short=custom_id).first():
-            flash('Имя уже занято')
+            flash(f'Имя {custom_id} уже занято!')
             return render_template('main.html', form=form)
 
         if not custom_id:
