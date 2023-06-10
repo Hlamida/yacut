@@ -1,8 +1,19 @@
 from http import HTTPStatus
 
-from flask import jsonify, render_template
+from flask import flash, jsonify, render_template
 
 from . import app, db
+from .forms import URLForm
+
+
+class InvalidWEBUsageError(Exception):
+    """Обработчик ошибок при генерации короткой ссылки."""
+
+    def __init__(self, message):
+        """Конструктор класса."""
+
+        super().__init__()
+        self.message = message
 
 
 class InvalidAPIUsageError(Exception):
@@ -22,6 +33,16 @@ class InvalidAPIUsageError(Exception):
         """Сериализация переданного сообщения об ошибке."""
 
         return dict(message=self.message)
+
+
+@app.errorhandler(InvalidWEBUsageError)
+def invalid_api_usage(error):
+    """Возвращает текст ошибки во флеш-сообщении."""
+
+    flash(error.message)
+    form = URLForm()
+
+    return render_template('index.html', form=form)
 
 
 @app.errorhandler(InvalidAPIUsageError)

@@ -19,30 +19,24 @@
                         {{ form.csrf_token }}
                         {{ form.original_link(class="form-control form-control-lg py-2 mb-3", placeholder=form.original_link.label.text) }}
                         <p>
-                        {% if form.original_link.errors %}
-                            {% for error in form.original_link.errors %}
-                            <span style="color: red">{{ error }}</span>
-                            {% endfor %}
-                        {% endif %}
+                          {% for error in form.original_link.errors %}
+                          <span style="color: red">{{ error }}</span>
+                          {% endfor %}
                         </p>
                     </div>
                     <div>
                         {{ form.custom_id(class="form-control form-control-lg py-2 mb-3", placeholder=form.custom_id.label.text) }}
                         {% if form.custom_id.errors %}
-                            {% for error in form.custom_id.errors %}
-                            <p>
-                              <span style="color: red">{{ error }}</span>
-                            </p>
-                            {% endfor %}
+                          <p>
+                            <span style="color: red">{{ error }}</span>
+                          </p>
                         {% endif %}
                         {% with messages = get_flashed_messages() %}
-                          {% if messages %}
-                            {% for message in messages %}
-                            <p>
-                              <span style="color: red">{{ message }}</span>
-                            </p>
-                            {% endfor %}
-                          {% endif %}
+                          {% for message in messages %}
+                          <p>
+                            <span style="color: red">{{ message }}</span>
+                          </p>
+                          {% endfor %}
                         {% endwith %}
                     </div>
                 {{ form.submit(class="btn btn-primary") }}
@@ -62,7 +56,7 @@
             <p class="text-center">
             <h5 class="text-center">
               Ваша новая ссылка готова:<br />
-              <a href="{{ url_for('redirect_view', short=short, _external=True) }}">{{ url_for('redirect_view', short=short, _external=True) }}</a>
+              <a href="{{ url_for(REDIRECT_FUNCTION, short=short, _external=True) }}">{{ FULL_SHORT_LINK }}</a>
             </h5>
             </p>
           </div>

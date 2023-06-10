@@ -1,59 +1,39 @@
-import re
 from http import HTTPStatus
 from typing import Any, Tuple
 
 from flask import jsonify, request
 
-from . import app, db
-from .constants import REGEX_PATTERN, USER_LINK_LENGHT
+from . import app
 from .error_handlers import InvalidAPIUsageError
 from .models import URLMap
-from .utils import get_unique_short_id
 
 
 @app.route('/api/id/', methods=['POST'])
 def add_link():
     """Добавляет ссылку по API."""
 
-    #try:
-    #    data = request.get_json()
-    #except Exception:
-    #    raise InvalidAPIUsageError('Отсутствует тело запроса')
-#
-    if request.get_json() is None:
+    try:
+        data = request.get_json()
+    except Exception:
         raise InvalidAPIUsageError('Отсутствует тело запроса')
 
-    data = request.get_json()
     original = data.get('url')
     if not original:
         raise InvalidAPIUsageError('"url" является обязательным полем!')
-
     custom_id = data.get('custom_id')
-    if custom_id:
-        if len(custom_id) > USER_LINK_LENGHT or not re.match(
-            REGEX_PATTERN, custom_id,
-        ):
-            raise InvalidAPIUsageError(
-                'Указано недопустимое имя для короткой ссылки'
-            )
 
-        if URLMap.query.filter_by(short=custom_id).first():
-            raise InvalidAPIUsageError(f'Имя "{custom_id}" уже занято.')
+    original_link = URLMap.check_url(original)
+    short = URLMap.check_short_link(custom_id)
+    url_map = URLMap.save(original_link, short)
 
-    else:
-        custom_id = get_unique_short_id()
-    result_link = URLMap(original=original, short=custom_id)
-    db.session.add(result_link)
-    db.session.commit()
-
-    return jsonify(result_link.to_dict()), HTTPStatus.CREATED
+    return jsonify(url_map.to_dict()), HTTPStatus.CREATED
 
 
 @app.route('/api/id/<string:short>/', methods=['GET'])
 def get_original_url(short) -> Tuple[Any, int]:
     """Осуществляет переадресацию."""
 
-    original_url = URLMap.query.filter_by(short=short).first()
+    original_url = URLMap.get(short)
     if not original_url:
         raise InvalidAPIUsageError('Указанный id не найден', HTTPStatus.NOT_FOUND)
 

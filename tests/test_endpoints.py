@@ -10,6 +10,7 @@ def test_create_id(client):
         'url': py_url,
         'custom_id': 'py',
     })
+    print('got.json = ', got.json)
     assert got.status_code == 201, (
         'При создании короткой ссылки должен возвращаться статус-код 201'
     )
