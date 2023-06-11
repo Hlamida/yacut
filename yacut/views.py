@@ -4,7 +4,7 @@ from typing import Any, Tuple
 from flask import Response, flash, redirect, render_template
 
 from . import app
-from .error_handlers import InvalidAPIUsageError
+from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 from .forms import URLForm
 from .models import URLMap
 from .constants import REDIRECT_FUNCTION
@@ -21,11 +21,10 @@ def index_view() -> Tuple[Any, HTTPStatus]:
     original_link = form.original_link.data
 
     if URLMap.get(custom_id):
-        flash(f'Имя {custom_id} уже занято!')
-        return render_template('index.html', form=form)
+        raise InvalidWEBUsageError(f'Имя {custom_id} уже занято!')
 
     if not custom_id:
-        custom_id = URLMap.check_short_link(value=None)
+        custom_id = URLMap.full_short(value=None)
 
     URLMap.save(
         original=original_link,

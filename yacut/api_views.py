@@ -23,7 +23,7 @@ def add_link():
     custom_id = data.get('custom_id')
 
     original_link = URLMap.check_url(original)
-    short = URLMap.check_short_link(custom_id)
+    short = URLMap.full_short(custom_id)
     url_map = URLMap.save(original_link, short)
 
     return jsonify(url_map.to_dict()), HTTPStatus.CREATED

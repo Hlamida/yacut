@@ -10,7 +10,6 @@ from .constants import (
     SHORT_LINK_LENGTH,
     REDIRECT_FUNCTION,
     REGEX_LINK_PATTERN,
-    REGEX_SHORT_PATTERN,
     REGEX_SHORT_SYMBOLS,
     USER_LINK_LENGHT,
 )
@@ -56,14 +55,17 @@ class URLMap(db.Model):
         db.session.commit()
         return url_map
 
-    @staticmethod
-    def full_short(value):
+    @classmethod
+    def full_short(cls, value):
+        """Образует новую ссылку в полном виде, сохраняет её значение."""
+
+        cheked_short = cls.check_short_link(value)
         full_short = url_for(
-            REDIRECT_FUNCTION, short=value, _external=True,
+            REDIRECT_FUNCTION, short=cheked_short, _external=True,
         )
         URLMap.FULL_SHORT_LINK = full_short
-        return full_short
 
+        return cheked_short
 
     def to_dict(self):
         """Преобразует значения полей в словарь."""
@@ -103,15 +105,12 @@ class URLMap(db.Model):
 
         if not value:
             try:
-                random_short_id = cls.get_random_short_id()
-                cls.full_short(random_short_id)
-                return random_short_id
+                return cls.get_random_short_id()
             except Exception as error:
                 raise InvalidAPIUsageError(error)
         cls.check_attr(
-            value, USER_LINK_LENGHT, REGEX_SHORT_PATTERN, cls.SHORT
+            value, USER_LINK_LENGHT, f'[{REGEX_SHORT_SYMBOLS}]*$', cls.SHORT
         )
         if URLMap.get(value):
             raise InvalidAPIUsageError(f'Имя "{value}" уже занято.')
-        cls.full_short(value)
         return value

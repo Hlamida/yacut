@@ -26,11 +26,11 @@
                     </div>
                     <div>
                         {{ form.custom_id(class="form-control form-control-lg py-2 mb-3", placeholder=form.custom_id.label.text) }}
-                        {% if form.custom_id.errors %}
+                        {% for error in form.custom_id.errors %}
                           <p>
                             <span style="color: red">{{ error }}</span>
                           </p>
-                        {% endif %}
+                        {% endfor %}
                         {% with messages = get_flashed_messages() %}
                           {% for message in messages %}
                           <p>

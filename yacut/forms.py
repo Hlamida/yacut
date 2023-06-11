@@ -7,7 +7,6 @@ from wtforms.validators import DataRequired, Length, Optional, Regexp
 from .constants import (
     ORIGINAL_LINK_LENGTH,
     REGEX_LINK_PATTERN,
-    REGEX_SHORT_PATTERN,
     REGEX_SHORT_SYMBOLS,
     USER_LINK_LENGHT,
 )
@@ -40,7 +39,7 @@ class URLForm(FlaskForm):
                 message=f'Длина строки превышает {USER_LINK_LENGHT} символов',
             ),
             Regexp(
-                REGEX_SHORT_SYMBOLS,
+                f'[{REGEX_SHORT_SYMBOLS}]',
                 message='Допускаются только латинские буквы и арабские цифры',
             ),
             Optional(),
