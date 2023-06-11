@@ -1,13 +1,13 @@
 from http import HTTPStatus
 from typing import Any, Tuple
 
-from flask import Response, flash, redirect, render_template
+from flask import Response, redirect, render_template
 
 from . import app
+from .constants import REDIRECT_FUNCTION
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 from .forms import URLForm
 from .models import URLMap
-from .constants import REDIRECT_FUNCTION
 
 
 @app.route('/', methods=['GET', 'POST'])

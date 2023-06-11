@@ -1,19 +1,13 @@
 import re
-from enum import Enum
-from random import sample
 from datetime import datetime
+from random import sample
 
 from flask import url_for
 
-from .constants import (
-    ORIGINAL_LINK_LENGTH,
-    SHORT_LINK_LENGTH,
-    REDIRECT_FUNCTION,
-    REGEX_LINK_PATTERN,
-    REGEX_SHORT_SYMBOLS,
-    USER_LINK_LENGHT,
-)
 from . import db
+from .constants import (ORIGINAL_LINK_LENGTH, REDIRECT_FUNCTION,
+                        REGEX_LINK_PATTERN, REGEX_SHORT_SYMBOLS,
+                        SHORT_LINK_LENGTH, USER_LINK_LENGHT)
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 
 

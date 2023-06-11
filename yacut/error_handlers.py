@@ -7,7 +7,7 @@ from .forms import URLForm
 
 
 class InvalidWEBUsageError(Exception):
-    """Обработчик ошибок при генерации короткой ссылки."""
+    """Обработчик ошибок при web генерации короткой ссылки."""
 
     def __init__(self, message):
         """Конструктор класса."""
