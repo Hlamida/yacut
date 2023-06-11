@@ -12,9 +12,8 @@ from .models import URLMap
 def add_link():
     """Добавляет ссылку по API."""
 
-    try:
-        data = request.get_json()
-    except Exception:
+    data = request.get_json(silent=True)
+    if data is None:
         raise InvalidAPIUsageError('Отсутствует тело запроса')
 
     original = data.get('url')
