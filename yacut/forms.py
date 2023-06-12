@@ -2,8 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, URLField
 from wtforms.validators import DataRequired, Length, Optional, Regexp
 
-from .constants import (ORIGINAL_LINK_LENGTH, REGEX_LINK_PATTERN,
-                        REGEX_SHORT_SYMBOLS, USER_LINK_LENGHT)
+from .constants import (ORIGINAL_LINK_LENGTH,
+                        VALID_SHORT_SYMBOLS, USERS_SHORT_ID_LENGHT)
 
 
 class URLForm(FlaskForm):
@@ -16,10 +16,6 @@ class URLForm(FlaskForm):
                 max=ORIGINAL_LINK_LENGTH,
                 message=f'Длина строки превышает {ORIGINAL_LINK_LENGTH} символов',
             ),
-            Regexp(
-                REGEX_LINK_PATTERN,
-                message='Недопустимый url',
-            ),
             DataRequired(
                 message='Обязательное поле'
             ),
@@ -29,11 +25,11 @@ class URLForm(FlaskForm):
         'Введите ваш вариант короткой ссылки',
         validators=[
             Length(
-                max=USER_LINK_LENGHT,
-                message=f'Длина строки превышает {USER_LINK_LENGHT} символов',
+                max=USERS_SHORT_ID_LENGHT,
+                message=f'Длина строки превышает {USERS_SHORT_ID_LENGHT} символов',
             ),
             Regexp(
-                f'[{REGEX_SHORT_SYMBOLS}]',
+                f'[{VALID_SHORT_SYMBOLS}]',
                 message='Допускаются только латинские буквы и арабские цифры',
             ),
             Optional(),

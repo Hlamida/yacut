@@ -1,5 +1,4 @@
 from http import HTTPStatus
-from typing import Any, Tuple
 
 from flask import jsonify, request
 
@@ -20,20 +19,27 @@ def add_link():
     if not original:
         raise InvalidAPIUsageError('"url" является обязательным полем!')
     custom_id = data.get('custom_id')
+    if not custom_id:
+        custom_id = URLMap.get_random_short()
 
-    original_link = URLMap.check_url(original)
-    short = URLMap.full_short(custom_id)
-    url_map = URLMap.save(original_link, short)
+    return jsonify(
+        URLMap.save(original, custom_id).to_dict(custom_id)
+    ), HTTPStatus.CREATED
 
-    return jsonify(url_map.to_dict()), HTTPStatus.CREATED
+    #return jsonify(
+    #    URLMap.save(
+    #        URLMap.check_url(original),
+    #        URLMap.full_short(custom_id),
+    #    ).to_dict()
+    #), HTTPStatus.CREATED
 
 
 @app.route('/api/id/<string:short>/', methods=['GET'])
-def get_original_url(short) -> Tuple[Any, int]:
+def get_original_url(short):
     """Осуществляет переадресацию."""
 
-    original_url = URLMap.get(short)
-    if not original_url:
+    url_map = URLMap.get(short)
+    if not url_map:
         raise InvalidAPIUsageError('Указанный id не найден', HTTPStatus.NOT_FOUND)
 
-    return jsonify({'url': original_url.original}), HTTPStatus.OK
+    return jsonify({'url': url_map.original}), HTTPStatus.OK

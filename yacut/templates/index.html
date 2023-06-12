@@ -47,7 +47,7 @@
           </div>
         </div>
       </div>
-      {% if short %}
+      {% if FULL_SHORT_LINK %}
       <div class="container">
         <div class="row ">
           <div class="col-sm">
@@ -56,7 +56,7 @@
             <p class="text-center">
             <h5 class="text-center">
               Ваша новая ссылка готова:<br />
-              <a href="{{ url_for(REDIRECT_FUNCTION, short=short, _external=True) }}">{{ FULL_SHORT_LINK }}</a>
+              <a href="{{ FULL_SHORT_LINK }}">{{ FULL_SHORT_LINK }}</a>
             </h5>
             </p>
           </div>
