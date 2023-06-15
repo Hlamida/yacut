@@ -2,8 +2,8 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, URLField
 from wtforms.validators import DataRequired, Length, Optional, Regexp
 
-from .constants import (ORIGINAL_LINK_LENGTH,
-                        VALID_SHORT_SYMBOLS, USERS_SHORT_ID_LENGHT)
+from .constants import (ORIGINAL_LINK_LENGTH, USERS_SHORT_ID_LENGHT,
+                        VALID_SHORT_SYMBOLS)
 
 
 class URLForm(FlaskForm):

@@ -1,12 +1,14 @@
-import validators
 from http import HTTPStatus
 
+import validators
 from flask import jsonify, request
 
 from . import app
 from .error_handlers import InvalidAPIUsageError
-from .error_messages import (URL_ERROR_MESSAGE, EMPTY_QUERY_ERROR_MESSAGE,
-                             ID_NOT_FOUND_ERROR_MESSAGE, EMPTY_URL_ERROR_MESSAGE)
+from .error_messages import (EMPTY_QUERY_ERROR_MESSAGE,
+                             EMPTY_URL_ERROR_MESSAGE,
+                             ID_NOT_FOUND_ERROR_MESSAGE,
+                             URL_ERROR_MESSAGE)
 from .models import URLMap
 
 

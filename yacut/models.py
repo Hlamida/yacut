@@ -6,11 +6,11 @@ from flask import url_for
 
 from . import db
 from .constants import (ORIGINAL_LINK_LENGTH, REDIRECT_FUNCTION,
-                        VALID_SHORT_SYMBOLS,
-                        SHORT_ID_LENGTH, USERS_SHORT_ID_LENGHT)
+                        SHORT_ID_LENGTH, USERS_SHORT_ID_LENGHT,
+                        VALID_SHORT_SYMBOLS)
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
-from .error_messages import (SHORT_ERROR_MESSAGE,
-                             SHORT_GENERATE_ERROR_MESSAGE, EMPTY_URL_ERROR_MESSAGE,
+from .error_messages import (EMPTY_URL_ERROR_MESSAGE, SHORT_ERROR_MESSAGE,
+                             SHORT_GENERATE_ERROR_MESSAGE,
                              SHORT_IS_EXIST_ERROR_MESSAGE)
 
 
