@@ -5,8 +5,10 @@ from random import sample
 from flask import url_for
 
 from . import db
-from .constants import (ORIGINAL_LINK_LENGTH, REDIRECT_FUNCTION,
-                        SHORT_ID_LENGTH, USERS_SHORT_ID_LENGHT,
+from .constants import (ORIGINAL_LINK_LENGTH,
+                        REDIRECT_FUNCTION,
+                        SHORT_ID_LENGTH,
+                        USERS_SHORT_ID_LENGHT,
                         VALID_SHORT_SYMBOLS)
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 from .error_messages import (EMPTY_URL_ERROR_MESSAGE,
