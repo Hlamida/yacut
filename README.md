@@ -72,18 +72,15 @@ python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Создайте базу данных, выполнив последовательно команды:
+Выполните следующие команды для создания миграций:
 ```
-flask shell
-```
-```
-from yacut import db
+flask db init
 ```
 ```
-db.create_all()
+flask db migrate -m "1-st migrations" 
 ```
 ```
-exit()
+flask db upgrade
 ```
 
 Запустите сервер на http://127.0.0.1:5000:
@@ -95,5 +92,4 @@ flask run --reload
 Технологический стек:
 Python, Flask, SQLAlchemy
 
-Автор: Кулагин Александр
-Telegram: @Kulagin_Aleksandr
+Автор: [Кулагин Александр](https://t.me/username/Kulagin_Aleksandr)

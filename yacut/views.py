@@ -1,13 +1,12 @@
 from http import HTTPStatus
 from typing import Any, Tuple
 
-from flask import Response, flash, redirect, render_template
+from flask import Response, redirect, render_template
 
 from . import app
 from .error_handlers import InvalidAPIUsageError
 from .forms import URLForm
 from .models import URLMap
-from .constants import REDIRECT_FUNCTION
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -20,23 +19,10 @@ def index_view() -> Tuple[Any, HTTPStatus]:
     custom_id = form.custom_id.data
     original_link = form.original_link.data
 
-    #if URLMap.get(custom_id):
-    #    flash(f'Имя {custom_id} уже занято!')
-    #    return render_template('index.html', form=form)
-
-    #if not custom_id:
-
-        #custom_id = URLMap.full_short(short=None)
-        #custom_id = URLMap.get_random_short()
     url_map = URLMap.save(
         original=original_link,
         short=custom_id,
     )
-
-    #context = {
-    #    'form': form,
-    #    'FULL_SHORT_LINK': URLMap.full_short(url_map.short),
-    #}
 
     return(
         render_template(

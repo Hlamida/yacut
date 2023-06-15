@@ -6,15 +6,15 @@ from flask import url_for
 
 from . import db
 from .constants import (ORIGINAL_LINK_LENGTH, REDIRECT_FUNCTION,
-                        REGEX_LINK_PATTERN, VALID_SHORT_SYMBOLS,
+                        VALID_SHORT_SYMBOLS,
                         SHORT_ID_LENGTH, USERS_SHORT_ID_LENGHT)
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
+from .error_messages import (SHORT_ERROR_MESSAGE,
+                             SHORT_GENERATE_ERROR_MESSAGE, EMPTY_URL_ERROR_MESSAGE,
+                             SHORT_IS_EXIST_ERROR_MESSAGE)
 
 
 class URLMap(db.Model):
-
-    MAIN = 'main'
-    SHORT = 'short'
 
     id = db.Column(db.Integer, primary_key=True)
     original = db.Column(db.String(ORIGINAL_LINK_LENGTH), nullable=False)
@@ -28,33 +28,31 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def get_random_short():
+    def get_random_short(original):
         """Метод генерации и проверки новой короткой ссылки."""
 
-        for _ in range(10):
+        count_original = URLMap.query.filter_by(original=original).count()
+
+        for _ in range(count_original + 1):
             short = ''.join(sample(VALID_SHORT_SYMBOLS, SHORT_ID_LENGTH))
             if not URLMap.get(short):
                 return short
-        raise InvalidWEBUsageError('Не удалось сгенерировать короткую ссылку')
+        raise InvalidWEBUsageError(SHORT_GENERATE_ERROR_MESSAGE)
 
-    @classmethod
-    def save(cls, original, short):
+    @staticmethod
+    def save(original, short):
         """Метод сохранения объекта в БД."""
 
         if not original:
-            raise InvalidAPIUsageError('"url" является обязательным полем!')
+            raise InvalidAPIUsageError(EMPTY_URL_ERROR_MESSAGE)
 
-        cls.check_attr(
-            original, ORIGINAL_LINK_LENGTH, REGEX_LINK_PATTERN, cls.MAIN
-        )
         if not short:
-            short = URLMap.get_random_short()
-        cls.check_attr(
-            short, USERS_SHORT_ID_LENGHT, f'[{VALID_SHORT_SYMBOLS}]*$', cls.SHORT
+            short = URLMap.get_random_short(original)
+        URLMap.check_attr(
+            short, USERS_SHORT_ID_LENGHT, VALID_SHORT_SYMBOLS, SHORT_ERROR_MESSAGE,
         )
         if URLMap.get(short):
-            raise InvalidAPIUsageError(f'Имя "{short}" уже занято.')
-        #short = cls.full_short(short)
+            raise InvalidAPIUsageError(SHORT_IS_EXIST_ERROR_MESSAGE)
 
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
@@ -62,55 +60,13 @@ class URLMap(db.Model):
 
         return url_map
 
-    #@classmethod
-    #def save(cls, original, short):
-    #    """Метод сохранения объекта в БД."""
-#
-    #    url_map = URLMap(original=original, short=short)
-    #    db.session.add(url_map)
-    #    db.session.commit()
-    #    return url_map
-
-
-    @classmethod
-    def full_short(cls, short):
+    @staticmethod
+    def full_short(short):
         """Образует новую ссылку в полном виде."""
 
         return url_for(
             REDIRECT_FUNCTION, short=short, _external=True,
         )
-        #URLMap.FULL_SHORT_LINK = full_short
-
-        #return short
-
-    #@classmethod
-    #def full_short(cls, short):
-    #    """Образует новую ссылку в полном виде, сохраняет её значение."""
-#
-    #    cls.check_attr(
-    #        short, USERS_SHORT_ID_LENGHT, f'[{VALID_SHORT_SYMBOLS}]*$', cls.SHORT
-    #    )
-    #    if URLMap.get(short):
-    #        raise InvalidAPIUsageError(f'Имя "{short}" уже занято.')
-#
-    #    full_short = url_for(
-    #        REDIRECT_FUNCTION, short=short, _external=True,
-    #    )
-    #    URLMap.FULL_SHORT_LINK = full_short
-#
-    #    return short
-
-    #@classmethod
-    #def full_short(cls, value):
-    #    """Образует новую ссылку в полном виде, сохраняет её значение."""
-#
-    #    cheked_short = cls.check_short_link(value)
-    #    full_short = url_for(
-    #        REDIRECT_FUNCTION, short=cheked_short, _external=True,
-    #    )
-    #    URLMap.FULL_SHORT_LINK = full_short
-#
-    #    return cheked_short
 
     def to_dict(self, short):
         """Преобразует значения полей в словарь."""
@@ -122,40 +78,13 @@ class URLMap(db.Model):
             short_link=short_link,
         )
 
-    @classmethod
-    def check_attr(cls, value, end, pattern, item):
+    @staticmethod
+    def check_attr(value, end, pattern, item):
         """Проверка корректности параметра."""
+        reg_pattern = re.escape(pattern)
+        regular = f'[{reg_pattern}]*$'
 
-        if (not isinstance(value, str) or not len(value) <= end or
-                not re.match(pattern, value)):
-            if item == cls.MAIN:
-                raise InvalidAPIUsageError('Недопустимый url')
-            else:
-                raise InvalidAPIUsageError('Указано недопустимое имя для короткой ссылки')
-
-    #@classmethod
-    #def check_url(cls, value):
-    #    """Проверка корректности входного URL."""
-#
-    #    if not value:
-    #        raise InvalidAPIUsageError('"url" является обязательным полем!')
-    #    cls.check_attr(
-    #        value, ORIGINAL_LINK_LENGTH, REGEX_LINK_PATTERN, cls.MAIN
-    #    )
-    #    return value
-
-    #@classmethod
-    #def check_short_link(cls, value):
-    #    """Проверка короткой ссылки и генерация."""
-#
-    #    if not value:
-    #        try:
-    #            return cls.get_random_short()
-    #        except Exception as error:
-    #            raise InvalidAPIUsageError(error)
-    #    cls.check_attr(
-    #        value, USERS_SHORT_ID_LENGHT, f'[{VALID_SHORT_SYMBOLS}]*$', cls.SHORT
-    #    )
-    #    if URLMap.get(value):
-    #        raise InvalidAPIUsageError(f'Имя "{value}" уже занято.')
-    #    return value
+        if not len(value) <= end:
+            raise InvalidAPIUsageError(item)
+        if not re.match(regular, value):
+            raise InvalidAPIUsageError(item)
