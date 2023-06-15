@@ -13,8 +13,7 @@ from .constants import (ORIGINAL_LINK_LENGTH,
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 from .error_messages import (EMPTY_URL_ERROR_MESSAGE,
                              SHORT_ERROR_MESSAGE,
-                             SHORT_GENERATE_ERROR_MESSAGE,
-                             SHORT_IS_EXIST_ERROR_MESSAGE)
+                             SHORT_GENERATE_ERROR_MESSAGE)
 
 
 class URLMap(db.Model):
