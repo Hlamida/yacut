@@ -3,6 +3,7 @@ from http import HTTPStatus
 from flask import jsonify, render_template
 
 from . import app, db
+from .forms import URLForm
 
 
 class InvalidWEBUsageError(Exception):

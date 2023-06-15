@@ -28,6 +28,8 @@ def add_link():
     custom_id = data.get('custom_id')
     if not custom_id:
         custom_id = URLMap.get_random_short(original)
+    if URLMap.get(custom_id):
+        raise InvalidAPIUsageError(f'Имя "{custom_id}" уже занято.')
 
     return jsonify(
         URLMap.save(original, custom_id).to_dict(custom_id)

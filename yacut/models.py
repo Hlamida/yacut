@@ -54,8 +54,6 @@ class URLMap(db.Model):
         URLMap.check_attr(
             short, USERS_SHORT_ID_LENGHT, VALID_SHORT_SYMBOLS, SHORT_ERROR_MESSAGE,
         )
-        if URLMap.get(short):
-            raise InvalidAPIUsageError(SHORT_IS_EXIST_ERROR_MESSAGE)
 
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)

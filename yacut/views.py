@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Any, Tuple
 
-from flask import Response, redirect, render_template
+from flask import Response, flash, redirect, render_template
 
 from . import app
 from .error_handlers import InvalidAPIUsageError
@@ -14,14 +14,16 @@ def index_view() -> Tuple[Any, HTTPStatus]:
     """Отображает главную страницу."""
 
     form = URLForm()
+    short = form.custom_id.data
+    original_link = form.original_link.data
     if not form.validate_on_submit():
         return render_template('index.html', form=form)
-    custom_id = form.custom_id.data
-    original_link = form.original_link.data
-
+    if URLMap.get(short):
+        flash(f'Имя {short} уже занято!')
+        return render_template('index.html', form=form)
     url_map = URLMap.save(
         original=original_link,
-        short=custom_id,
+        short=short,
     )
 
     return(
