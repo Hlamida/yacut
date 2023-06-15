@@ -9,7 +9,8 @@ from .constants import (ORIGINAL_LINK_LENGTH, REDIRECT_FUNCTION,
                         SHORT_ID_LENGTH, USERS_SHORT_ID_LENGHT,
                         VALID_SHORT_SYMBOLS)
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
-from .error_messages import (EMPTY_URL_ERROR_MESSAGE, SHORT_ERROR_MESSAGE,
+from .error_messages import (EMPTY_URL_ERROR_MESSAGE,
+                             SHORT_ERROR_MESSAGE,
                              SHORT_GENERATE_ERROR_MESSAGE,
                              SHORT_IS_EXIST_ERROR_MESSAGE)
 
