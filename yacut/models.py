@@ -49,7 +49,6 @@ class URLMap(db.Model):
             if not re.match(REG_PATTERN, short):
                 raise InvalidAPIUsageError(SHORT_ERROR_MESSAGE)
             if URLMap.get(short):
-                flash(f'Имя {short} уже занято!')
                 raise InvalidAPIUsageError(f'Имя {short} уже занято!')
         else:
             short = URLMap.get_random_short(original)

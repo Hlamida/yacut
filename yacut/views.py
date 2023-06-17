@@ -21,8 +21,7 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         original=original_link,
         short=short,
     )
-    if not url_map:
-        flash(f'Имя {short} уже занято!')
+    if url_map is None:
         return render_template('index.html', form=form)
     return(
         render_template(
