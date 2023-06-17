@@ -23,7 +23,6 @@ sys.path.append(str(BASE_DIR))
 #        raise AssertionError('В файле models не найдена модель URLMap')
 #    raise AssertionError('Не обнаружен объект класса SQLAlchemy. Создайте его и назовите db.')
 
-
 try:
     from yacut import app, db
     from yacut.models import URLMap
