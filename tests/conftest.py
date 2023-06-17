@@ -10,19 +10,6 @@ load_dotenv()
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
 sys.path.append(str(BASE_DIR))
 
-
-#try:
-#    from yacut import app, db
-#    from yacut.models import URLMap
-#except NameError:
-#    raise AssertionError(
-#        'Не обнаружен объект приложения. Создайте экземпляр класса Flask и назовите его app.',
-#    )
-#except ImportError as exc:
-#    if any(obj in exc.name for obj in ['models', 'URLMap']):
-#        raise AssertionError('В файле models не найдена модель URLMap')
-#    raise AssertionError('Не обнаружен объект класса SQLAlchemy. Создайте его и назовите db.')
-
 try:
     from yacut import app, db
     from yacut.models import URLMap

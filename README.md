@@ -72,13 +72,8 @@ python3 -m pip install --upgrade pip
 pip install -r requirements.txt
 ```
 
-Выполните следующие команды для создания миграций:
-```
-flask db init
-```
-```
-flask db migrate -m "1-st migrations" 
-```
+Создайте базу данных, если она отсутствует. Примените миграции:
+
 ```
 flask db upgrade
 ```
