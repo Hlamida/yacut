@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from random import sample
 
-from flask import flash, url_for
+from flask import flash, render_template, url_for
 
 from . import db
 from .constants import (COUNT_ORIGINAL,
@@ -14,6 +14,7 @@ from .constants import (COUNT_ORIGINAL,
                         VALID_SHORT_SYMBOLS)
 from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 from .error_messages import (SHORT_ERROR_MESSAGE, SHORT_GENERATE_ERROR_MESSAGE)
+from .forms import URLForm
 
 
 class URLMap(db.Model):
@@ -39,6 +40,7 @@ class URLMap(db.Model):
     @staticmethod
     def save(original, short):
         """Метод сохранения объекта в БД."""
+        form = URLForm()
         if len(original) > ORIGINAL_LINK_LENGTH:
             raise InvalidAPIUsageError(f'''
                 Длина строки превышает {ORIGINAL_LINK_LENGTH} символов
@@ -50,7 +52,7 @@ class URLMap(db.Model):
                 raise InvalidAPIUsageError(SHORT_ERROR_MESSAGE)
             if URLMap.get(short):
                 flash(f'Имя {short} уже занято!')
-                raise InvalidAPIUsageError(f'Имя {short} уже занято!')
+                return render_template('index.html', form=form)
         else:
             short = URLMap.get_random_short(original)
         url_map = URLMap(original=original, short=short)
