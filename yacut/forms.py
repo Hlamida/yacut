@@ -3,8 +3,7 @@ from wtforms import StringField, SubmitField, URLField
 from wtforms.validators import DataRequired, Length, Optional, Regexp
 
 from .constants import (ORIGINAL_LINK_LENGTH,
-                        REG_PATTERN, USERS_SHORT_ID_LENGHT,
-                        VALID_SHORT_SYMBOLS)
+                        REG_PATTERN, USERS_SHORT_ID_LENGHT)
 
 
 class URLForm(FlaskForm):
