@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Any, Tuple
 
-from flask import Response, flash, redirect, render_template
+from flask import Response, redirect, render_template
 
 from . import app
 from .error_handlers import InvalidAPIUsageError
