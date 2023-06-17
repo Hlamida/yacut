@@ -1,7 +1,7 @@
 from http import HTTPStatus
 from typing import Any, Tuple
 
-from flask import Response, flash, redirect, render_template
+from flask import Response, redirect, render_template
 
 from . import app
 from .error_handlers import InvalidAPIUsageError
@@ -21,8 +21,7 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         original=original_link,
         short=short,
     )
-    if type(url_map) == str:
-        flash(f'Имя {short} уже занято!')
+    if url_map is None:
         return render_template('index.html', form=form)
     return(
         render_template(
