@@ -21,7 +21,7 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         original=original_link,
         short=short,
     )
-    if url_map is None:
+    if type(url_map) == str:
         return render_template('index.html', form=form)
     return(
         render_template(
