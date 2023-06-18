@@ -2,38 +2,47 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, URLField
 from wtforms.validators import DataRequired, Length, Optional, Regexp
 
-from .constants import (ORIGINAL_LINK_LENGTH,
-                        REG_PATTERN, USERS_SHORT_ID_LENGHT)
+from .constants import (
+    ORIGINAL_LINK_LENGTH,
+    VALID_SHORT_PATTERN,
+    USERS_SHORT_LENGHT
+)
+
+INPUT_URL_MESSAGE = 'Введите исходную ссылку'
+INPUT_SHORT_MESSAGE = 'Введите ваш вариант короткой ссылки'
+LENGTH_URL_MESSAGE_ERROR = 'Длина строки превышает {} символов'.format(ORIGINAL_LINK_LENGTH)
+LENGTH_SHORT_MESSAGE_ERROR = 'Длина строки превышает {} символов'.format(USERS_SHORT_LENGHT)
+REQUIRED_FIELD_MESSAGE_ERROR = 'Обязательное поле'
+VALID_SHORT_MESSAGE_ERROR = 'Допускаются только латинские буквы и арабские цифры'
+SUBMIT_PHRASE = 'Вжжжух!'
 
 
 class URLForm(FlaskForm):
     """Определяет форму ввода данных."""
     original_link = URLField(
-        'Введите исходную ссылку',
+        INPUT_URL_MESSAGE,
         validators=[
             Length(
                 max=ORIGINAL_LINK_LENGTH,
-                message=f'''
-                Длина строки превышает {ORIGINAL_LINK_LENGTH} символов
-                ''',
+                message=LENGTH_URL_MESSAGE_ERROR,
             ),
             DataRequired(
-                message='Обязательное поле'
+                message=REQUIRED_FIELD_MESSAGE_ERROR
             ),
         ],
     )
     custom_id = StringField(
-        'Введите ваш вариант короткой ссылки',
+        INPUT_SHORT_MESSAGE,
         validators=[
             Length(
-                max=USERS_SHORT_ID_LENGHT,
-                message=f'Длина строки превышает {USERS_SHORT_ID_LENGHT} символов',
+                max=USERS_SHORT_LENGHT,
+                message=LENGTH_SHORT_MESSAGE_ERROR,
             ),
             Regexp(
-                REG_PATTERN,
-                message='Допускаются только латинские буквы и арабские цифры',
+                VALID_SHORT_PATTERN,
+                message=VALID_SHORT_MESSAGE_ERROR,
             ),
             Optional(),
         ],
     )
-    submit = SubmitField('Вжжжух!')
+    submit = SubmitField(SUBMIT_PHRASE)

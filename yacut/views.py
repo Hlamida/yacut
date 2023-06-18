@@ -4,7 +4,7 @@ from typing import Any, Tuple
 from flask import Response, redirect, render_template
 
 from . import app
-from .error_handlers import InvalidAPIUsageError
+from .error_handlers import InvalidUsageError
 from .forms import URLForm
 from .models import URLMap
 
@@ -17,17 +17,17 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         return render_template('index.html', form=form)
     short = form.custom_id.data
     original_link = form.original_link.data
-    url_map = URLMap.save(
-        original=original_link,
-        short=short,
-    )
-    if url_map is None:
-        return render_template('index.html', form=form)
     return(
         render_template(
             'index.html',
             form=form,
-            short_link=URLMap.full_short(url_map.short),
+            short_link=URLMap.full_short(
+                URLMap.save(
+                    original=original_link,
+                    short=short,
+                    form=form,
+                ).short
+            ),
         ),
         HTTPStatus.OK,
     )
@@ -38,5 +38,5 @@ def redirect_view(short) -> Response:
     """Осуществляет переадресацию."""
     url_map = URLMap.get(short)
     if not url_map:
-        raise InvalidAPIUsageError('Указанный id не найден', HTTPStatus.NOT_FOUND)
+        raise InvalidUsageError('Указанный id не найден', HTTPStatus.NOT_FOUND)
     return redirect(url_map.original)

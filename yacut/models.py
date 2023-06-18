@@ -5,15 +5,24 @@ from random import sample
 from flask import flash, url_for
 
 from . import db
-from .constants import (COUNT_ORIGINAL,
-                        ORIGINAL_LINK_LENGTH,
-                        REDIRECT_FUNCTION,
-                        REG_PATTERN,
-                        SHORT_LENGTH,
-                        USERS_SHORT_ID_LENGHT,
-                        VALID_SHORT_SYMBOLS)
-from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
-from .error_messages import (SHORT_ERROR_MESSAGE, SHORT_GENERATE_ERROR_MESSAGE)
+from .constants import (
+    QUANTITY_ATTEMPTS,
+    ORIGINAL_LINK_LENGTH,
+    REDIRECT_FUNCTION,
+    VALID_SHORT_PATTERN,
+    SHORT_LENGTH,
+    USERS_SHORT_LENGHT,
+    VALID_SHORT_SYMBOLS
+)
+from .error_handlers import InvalidUsageError, InvalidWEBUsageError
+from .error_messages import (
+    SHORT_ERROR_MESSAGE,
+    SHORT_EXIST_MESSAGE_ERROR,
+    SHORT_GENERATE_ERROR_MESSAGE
+)
+
+
+LENGTH_URL_MESSAGE_ERROR = 'Длина строки превышает {} символов'.format(ORIGINAL_LINK_LENGTH)
 
 
 class URLMap(db.Model):
@@ -28,30 +37,30 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def get_random_short(original):
+    def get_short(original):
         """Метод генерации и проверки новой короткой ссылки."""
-        for _ in range(COUNT_ORIGINAL):
+        for _ in range(QUANTITY_ATTEMPTS):
             short = ''.join(sample(VALID_SHORT_SYMBOLS, SHORT_LENGTH))
             if not URLMap.get(short):
                 return short
         raise InvalidWEBUsageError(SHORT_GENERATE_ERROR_MESSAGE)
 
     @staticmethod
-    def save(original, short):
+    def save(original, short, form=None):
         """Метод сохранения объекта в БД."""
-        if len(original) > ORIGINAL_LINK_LENGTH:
-            raise InvalidAPIUsageError(f'''
-                Длина строки превышает {ORIGINAL_LINK_LENGTH} символов
-                ''',)
+        if not form:
+            if len(original) > ORIGINAL_LINK_LENGTH:
+                raise InvalidUsageError(LENGTH_URL_MESSAGE_ERROR)
+            if short:
+                if len(short) > USERS_SHORT_LENGHT:
+                    raise InvalidUsageError(SHORT_ERROR_MESSAGE)
+                if not re.match(VALID_SHORT_PATTERN, short):
+                    raise InvalidUsageError(SHORT_ERROR_MESSAGE)
         if short:
-            if not len(short) <= USERS_SHORT_ID_LENGHT:
-                raise InvalidAPIUsageError(SHORT_ERROR_MESSAGE)
-            if not re.match(REG_PATTERN, short):
-                raise InvalidAPIUsageError(SHORT_ERROR_MESSAGE)
             if URLMap.get(short):
-                return flash(f'Имя {short} уже занято!')
+                return flash(SHORT_EXIST_MESSAGE_ERROR.format(short))
         else:
-            short = URLMap.get_random_short(original)
+            short = URLMap.get_short(original)
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()
@@ -59,7 +68,7 @@ class URLMap(db.Model):
 
     @staticmethod
     def full_short(short):
-        """Образует новую ссылку в полном виде."""
+        """Образует ссылку в полном виде."""
         return url_for(
             REDIRECT_FUNCTION, short=short, _external=True,
         )

@@ -10,7 +10,7 @@ class InvalidWEBUsageError(Exception):
     pass
 
 
-class InvalidAPIUsageError(Exception):
+class InvalidUsageError(Exception):
     """Обработчик ошибок для API."""
     status_code = HTTPStatus.BAD_REQUEST
 
@@ -26,7 +26,7 @@ class InvalidAPIUsageError(Exception):
         return dict(message=self.message)
 
 
-@app.errorhandler(InvalidAPIUsageError)
+@app.errorhandler(InvalidUsageError)
 def invalid_api_usage(error):
     """Возвращает в ответе текст ошибки и статус-код."""
     return jsonify(error.to_dict()), error.status_code
