@@ -1,7 +1,0 @@
-EMPTY_QUERY_ERROR_MESSAGE = 'Отсутствует тело запроса'
-EMPTY_URL_ERROR_MESSAGE = '"url" является обязательным полем!'
-ID_NOT_FOUND_ERROR_MESSAGE = 'Указанный id не найден'
-URL_ERROR_MESSAGE = 'Недопустимый url'
-SHORT_ERROR_MESSAGE = 'Указано недопустимое имя для короткой ссылки'
-SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято!'
-SHORT_GENERATE_ERROR_MESSAGE = 'Не удалось сгенерировать короткую ссылку'

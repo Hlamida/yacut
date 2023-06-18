@@ -15,13 +15,11 @@ from .constants import (
     VALID_SHORT_SYMBOLS
 )
 from .error_handlers import InvalidUsageError, InvalidWEBUsageError
-from .error_messages import (
-    SHORT_ERROR_MESSAGE,
-    SHORT_EXIST_MESSAGE_ERROR,
-    SHORT_GENERATE_ERROR_MESSAGE
-)
 
 
+SHORT_ERROR_MESSAGE = 'Указано недопустимое имя для короткой ссылки'
+SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято!'
+SHORT_GENERATE_ERROR_MESSAGE = 'Не удалось сгенерировать короткую ссылку'
 LENGTH_URL_MESSAGE_ERROR = 'Длина строки превышает {} символов'.format(ORIGINAL_LINK_LENGTH)
 
 
@@ -58,7 +56,7 @@ class URLMap(db.Model):
                     raise InvalidUsageError(SHORT_ERROR_MESSAGE)
         if short:
             if URLMap.get(short):
-                return flash(SHORT_EXIST_MESSAGE_ERROR.format(short))
+                raise InvalidWEBUsageError(SHORT_EXIST_MESSAGE_ERROR.format(short))
         else:
             short = URLMap.get_short(original)
         url_map = URLMap(original=original, short=short)

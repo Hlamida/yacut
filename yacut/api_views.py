@@ -5,14 +5,13 @@ from flask import jsonify, request
 
 from . import app
 from .error_handlers import InvalidUsageError
-from .error_messages import (
-    EMPTY_QUERY_ERROR_MESSAGE,
-    EMPTY_URL_ERROR_MESSAGE,
-    ID_NOT_FOUND_ERROR_MESSAGE,
-    SHORT_EXIST_MESSAGE_ERROR,
-    URL_ERROR_MESSAGE,
-)
 from .models import URLMap
+
+EMPTY_QUERY_ERROR_MESSAGE = 'Отсутствует тело запроса'
+EMPTY_URL_ERROR_MESSAGE = '"url" является обязательным полем!'
+ID_NOT_FOUND_ERROR_MESSAGE = 'Указанный id не найден'
+URL_ERROR_MESSAGE = 'Недопустимый url'
+SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято!'
 
 
 @app.route('/api/id/', methods=['POST'])
