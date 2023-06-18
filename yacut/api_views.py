@@ -11,7 +11,7 @@ EMPTY_QUERY_ERROR_MESSAGE = 'Отсутствует тело запроса'
 EMPTY_URL_ERROR_MESSAGE = '"url" является обязательным полем!'
 ID_NOT_FOUND_ERROR_MESSAGE = 'Указанный id не найден'
 URL_ERROR_MESSAGE = 'Недопустимый url'
-SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято!'
+SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято.'
 
 
 @app.route('/api/id/', methods=['POST'])
