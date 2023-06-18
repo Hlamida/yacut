@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from random import sample
 
-from flask import flash, url_for
+from flask import url_for
 
 from . import db
 from .constants import (
