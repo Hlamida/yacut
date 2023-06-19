@@ -4,7 +4,7 @@ import validators
 from flask import jsonify, request
 
 from . import app
-from .error_handlers import InvalidUsageError
+from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 from .models import URLMap
 
 EMPTY_QUERY_ERROR_MESSAGE = 'Отсутствует тело запроса'
@@ -19,19 +19,17 @@ def add_link():
     """Добавляет ссылку по API."""
     data = request.get_json(silent=True)
     if data is None:
-        raise InvalidUsageError(EMPTY_QUERY_ERROR_MESSAGE)
+        raise InvalidAPIUsageError(EMPTY_QUERY_ERROR_MESSAGE)
     original = data.get('url')
     if not original:
-        raise InvalidUsageError(EMPTY_URL_ERROR_MESSAGE)
-    if not validators.url(original):
-        raise InvalidUsageError(URL_ERROR_MESSAGE)
+        raise InvalidAPIUsageError(EMPTY_URL_ERROR_MESSAGE)
     custom_id = data.get('custom_id')
-    if not custom_id:
-        custom_id = URLMap.get_short(original)
-    if URLMap.get(custom_id):
-        raise InvalidUsageError(SHORT_EXIST_MESSAGE_ERROR.format(custom_id))
+    try:
+        url_map = URLMap.save(original, custom_id)
+    except InvalidWEBUsageError as error:
+        raise InvalidAPIUsageError(str(error))
     return jsonify(
-        URLMap.save(original, custom_id).to_dict(custom_id)
+        url_map.to_dict()
     ), HTTPStatus.CREATED
 
 
@@ -40,5 +38,5 @@ def get_original_url(short):
     """Осуществляет переадресацию."""
     url_map = URLMap.get(short)
     if not url_map:
-        raise InvalidUsageError(ID_NOT_FOUND_ERROR_MESSAGE, HTTPStatus.NOT_FOUND)
+        raise InvalidAPIUsageError(ID_NOT_FOUND_ERROR_MESSAGE, HTTPStatus.NOT_FOUND)
     return jsonify({'url': url_map.original}), HTTPStatus.OK

@@ -4,7 +4,7 @@ from typing import Any, Tuple
 from flask import Response, flash, redirect, render_template
 
 from . import app
-from .error_handlers import InvalidUsageError, InvalidWEBUsageError
+from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
 from .forms import URLForm
 from .models import URLMap
 
@@ -23,7 +23,7 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         url_map = URLMap.save(
             original=form.original_link.data,
             short=form.custom_id.data,
-            form=form,
+            simple_check=True,
         )
     except InvalidWEBUsageError as error:
         flash(str(error))
@@ -45,5 +45,5 @@ def redirect_view(short) -> Response:
     """Осуществляет переадресацию."""
     url_map = URLMap.get(short)
     if not url_map:
-        raise InvalidUsageError(NO_ID_MESSAGE_ERROR, HTTPStatus.NOT_FOUND)
+        raise InvalidAPIUsageError(NO_ID_MESSAGE_ERROR, HTTPStatus.NOT_FOUND)
     return redirect(url_map.original)
