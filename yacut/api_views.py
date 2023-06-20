@@ -27,7 +27,7 @@ def add_link():
         url_map = URLMap.save(original, custom_id)
     except InvalidWEBUsageError as error:
         if 'занято' in str(error):
-            raise InvalidAPIUsageError(SHORT_EXIST_MESSAGE_ERROR)
+            raise InvalidAPIUsageError(SHORT_EXIST_MESSAGE_ERROR.format(custom_id))
         raise InvalidAPIUsageError(str(error))
     return jsonify(
         url_map.to_dict()
