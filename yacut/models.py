@@ -49,9 +49,9 @@ class URLMap(db.Model):
         raise InvalidWEBUsageError(SHORT_GENERATE_ERROR_MESSAGE)
 
     @staticmethod
-    def save(original, short, check='нет'):
+    def save(original, short, check=False):
         """Метод сохранения объекта в БД."""
-        if check == 'нет':
+        if not check:
             if len(original) > ORIGINAL_LINK_LENGTH:
                 raise InvalidWEBUsageError(LENGTH_URL_MESSAGE_ERROR)
             if not url(original):
