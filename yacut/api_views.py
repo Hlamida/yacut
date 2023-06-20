@@ -27,7 +27,9 @@ def add_link():
         url_map = URLMap.save(original, custom_id)
     except InvalidWEBUsageError as error:
         if 'занято' in str(error):
-            raise InvalidAPIUsageError(SHORT_EXIST_MESSAGE_ERROR.format(custom_id))
+            raise InvalidAPIUsageError(
+                SHORT_EXIST_MESSAGE_ERROR.format(custom_id)
+            )
         raise InvalidAPIUsageError(str(error))
     return jsonify(
         url_map.to_dict()
@@ -39,5 +41,7 @@ def get_original_url(short):
     """Осуществляет переадресацию."""
     url_map = URLMap.get(short)
     if not url_map:
-        raise InvalidAPIUsageError(ID_NOT_FOUND_ERROR_MESSAGE, HTTPStatus.NOT_FOUND)
+        raise InvalidAPIUsageError(
+            ID_NOT_FOUND_ERROR_MESSAGE, HTTPStatus.NOT_FOUND
+        )
     return jsonify({'url': url_map.original}), HTTPStatus.OK

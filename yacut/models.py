@@ -1,5 +1,5 @@
 import re
-import validators
+from validators import url
 from datetime import datetime
 from random import sample
 
@@ -20,8 +20,11 @@ from .error_handlers import InvalidWEBUsageError
 
 SHORT_ERROR_MESSAGE = 'Указано недопустимое имя для короткой ссылки'
 SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято!'
+SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR = 'Имя "{}" уже занято.'
 SHORT_GENERATE_ERROR_MESSAGE = 'Не удалось сгенерировать короткую ссылку'
-LENGTH_URL_MESSAGE_ERROR = 'Длина строки превышает {} символов'.format(ORIGINAL_LINK_LENGTH)
+LENGTH_URL_MESSAGE_ERROR = (
+    f'Длина строки превышает {ORIGINAL_LINK_LENGTH} символов'
+)
 URL_ERROR_MESSAGE = 'Недопустимый url'
 
 
@@ -37,7 +40,7 @@ class URLMap(db.Model):
         return URLMap.query.filter_by(short=short).first()
 
     @staticmethod
-    def short_generate():
+    def generate_short():
         """Метод генерации короткой ссылки."""
         for _ in range(ATTEMPTS_SHORT_GENERATE):
             short = ''.join(sample(VALID_SHORT_SYMBOLS, SHORT_LENGTH))
@@ -46,23 +49,32 @@ class URLMap(db.Model):
         raise InvalidWEBUsageError(SHORT_GENERATE_ERROR_MESSAGE)
 
     @staticmethod
-    def save(original, short, simple_check=None):
+    def save(original, short, check='нет'):
         """Метод сохранения объекта в БД."""
-        if not simple_check:
+        if check == 'нет':
             if len(original) > ORIGINAL_LINK_LENGTH:
                 raise InvalidWEBUsageError(LENGTH_URL_MESSAGE_ERROR)
-            if not validators.url(original):
+            if not url(original):
                 raise InvalidWEBUsageError(URL_ERROR_MESSAGE)
             if short:
                 if len(short) > USERS_SHORT_LENGHT:
                     raise InvalidWEBUsageError(SHORT_ERROR_MESSAGE)
                 if not re.match(VALID_SHORT_PATTERN, short):
                     raise InvalidWEBUsageError(SHORT_ERROR_MESSAGE)
-        if short:
-            if URLMap.get(short):
-                raise InvalidWEBUsageError(SHORT_EXIST_MESSAGE_ERROR.format(short))
+                if URLMap.get(short):
+                    raise InvalidWEBUsageError(
+                        SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR.format(short)
+                    )
+            else:
+                short = URLMap.generate_short()
         else:
-            short = URLMap.short_generate()
+            if short:
+                if URLMap.get(short):
+                    raise InvalidWEBUsageError(
+                        SHORT_EXIST_MESSAGE_ERROR.format(short)
+                    )
+            else:
+                short = URLMap.generate_short()
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()
@@ -77,8 +89,7 @@ class URLMap(db.Model):
 
     def to_dict(self):
         """Преобразует значения полей в словарь."""
-        short_link = self.full_short(self.short)
         return dict(
             url=self.original,
-            short_link=short_link,
+            short_link=self.full_short(self.short),
         )

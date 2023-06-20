@@ -10,10 +10,16 @@ from .constants import (
 
 INPUT_URL_MESSAGE = 'Введите исходную ссылку'
 INPUT_SHORT_MESSAGE = 'Введите ваш вариант короткой ссылки'
-LENGTH_URL_MESSAGE_ERROR = 'Длина строки превышает {} символов'.format(ORIGINAL_LINK_LENGTH)
-LENGTH_SHORT_MESSAGE_ERROR = 'Длина строки превышает {} символов'.format(USERS_SHORT_LENGHT)
+LENGTH_URL_MESSAGE_ERROR = (
+    f'Длина строки превышает {ORIGINAL_LINK_LENGTH} символов'
+)
+LENGTH_SHORT_MESSAGE_ERROR = (
+    f'Длина строки превышает {USERS_SHORT_LENGHT} символов'
+)
 REQUIRED_FIELD_MESSAGE_ERROR = 'Обязательное поле'
-VALID_SHORT_MESSAGE_ERROR = 'Допускаются только латинские буквы и арабские цифры'
+VALID_SHORT_MESSAGE_ERROR = (
+    'Допускаются только латинские буквы и арабские цифры'
+)
 SUBMIT_PHRASE = 'Вжжжух!'
 
 

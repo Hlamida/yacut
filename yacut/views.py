@@ -23,7 +23,7 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         url_map = URLMap.save(
             original=form.original_link.data,
             short=form.custom_id.data,
-            simple_check=True,
+            check=True,
         )
     except InvalidWEBUsageError as error:
         flash(str(error))
