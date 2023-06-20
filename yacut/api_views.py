@@ -1,6 +1,5 @@
 from http import HTTPStatus
 
-import validators
 from flask import jsonify, request
 
 from . import app
