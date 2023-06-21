@@ -25,25 +25,22 @@ def index_view() -> Tuple[Any, HTTPStatus]:
     if not form.validate_on_submit():
         return render_template(INDEX_PAGE, form=form)
     try:
-        return(
-            render_template(
-                INDEX_PAGE,
-                form=form,
-                short_link=URLMap.full_short(
-                    URLMap.save(
-                        original=form.original_link.data,
-                        short=form.custom_id.data,
-                        skip_validation=True,
-                    ).short
-                ),
-            ),
-            HTTPStatus.OK,
+        url_map = URLMap.save(
+            original=form.original_link.data,
+            short=form.custom_id.data,
+            skip_validation=True,
         )
-    except InvalidWEBUsageError as error:
-        flash(str(error))
     except ShortExcistError:
-        flash(SHORT_EXIST_MESSAGE_ERROR)
-    return render_template(INDEX_PAGE, form=form)
+        flash(SHORT_EXIST_MESSAGE_ERROR.format(url_map.short))
+        return render_template(INDEX_PAGE, form=form)
+    return(
+        render_template(
+            INDEX_PAGE,
+            form=form,
+            short_link=URLMap.full_short(url_map.short),
+        ),
+        HTTPStatus.OK,
+    )
 
 
 @app.route('/<string:short>')

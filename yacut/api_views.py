@@ -34,7 +34,7 @@ def add_link():
     except InvalidWEBUsageError as error:
         raise InvalidAPIUsageError(str(error))
     except ShortExcistError:
-        raise InvalidAPIUsageError(SHORT_EXIST_MESSAGE_ERROR)
+        raise InvalidAPIUsageError(SHORT_EXIST_MESSAGE_ERROR.format(custom_id))
 
 
 @app.route('/api/id/<string:short>/', methods=['GET'])
