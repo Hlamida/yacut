@@ -3,7 +3,11 @@ from http import HTTPStatus
 from flask import jsonify, request
 
 from . import app
-from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
+from .error_handlers import (
+    InvalidAPIUsageError,
+    InvalidWEBUsageError,
+    ShortExcistError
+)
 from .models import URLMap
 
 EMPTY_QUERY_ERROR_MESSAGE = 'Отсутствует тело запроса'
@@ -29,6 +33,8 @@ def add_link():
         ), HTTPStatus.CREATED
     except InvalidWEBUsageError as error:
         raise InvalidAPIUsageError(str(error))
+    except ShortExcistError:
+        raise InvalidAPIUsageError(SHORT_EXIST_MESSAGE_ERROR)
 
 
 @app.route('/api/id/<string:short>/', methods=['GET'])

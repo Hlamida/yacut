@@ -6,7 +6,12 @@ from . import app, db
 
 
 class InvalidWEBUsageError(Exception):
-    """Обработчик ошибок при web генерации короткой ссылки."""
+    """Обработчик ошибок для модели."""
+    pass
+
+
+class ShortExcistError(Exception):
+    """Обработчик ошибок при генерации короткой ссылки."""
     pass
 
 

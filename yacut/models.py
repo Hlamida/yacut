@@ -15,11 +15,10 @@ from .constants import (
     USERS_SHORT_LENGHT,
     VALID_SHORT_SYMBOLS
 )
-from .error_handlers import InvalidWEBUsageError
+from .error_handlers import ShortExcistError, InvalidWEBUsageError
 
 
 SHORT_ERROR_MESSAGE = 'Указано недопустимое имя для короткой ссылки'
-SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято!'
 SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR = 'Имя "{}" уже занято.'
 SHORT_GENERATE_ERROR_MESSAGE = 'Не удалось сгенерировать короткую ссылку'
 LENGTH_URL_MESSAGE_ERROR = (
@@ -49,9 +48,9 @@ class URLMap(db.Model):
         raise InvalidWEBUsageError(SHORT_GENERATE_ERROR_MESSAGE)
 
     @staticmethod
-    def save(original, short, full_validation=False):
+    def save(original, short, skip_validation=False):
         """Метод сохранения объекта в БД."""
-        if not full_validation:
+        if not skip_validation:
             if len(original) > ORIGINAL_LINK_LENGTH:
                 raise InvalidWEBUsageError(LENGTH_URL_MESSAGE_ERROR)
             if not url(original):
@@ -63,14 +62,8 @@ class URLMap(db.Model):
                     raise InvalidWEBUsageError(SHORT_ERROR_MESSAGE)
         if short:
             if URLMap.get(short):
-                if full_validation:
-                    raise InvalidWEBUsageError(
-                        SHORT_EXIST_MESSAGE_ERROR.format(short)
-                    )
-                else:
-                    raise InvalidWEBUsageError(
-                        SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR.format(short)
-                    )
+                raise ShortExcistError()
+
         else:
             short = URLMap.generate_short()
         url_map = URLMap(original=original, short=short)

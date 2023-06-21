@@ -4,13 +4,18 @@ from typing import Any, Tuple
 from flask import Response, flash, redirect, render_template
 
 from . import app
-from .error_handlers import InvalidAPIUsageError, InvalidWEBUsageError
+from .error_handlers import (
+    InvalidAPIUsageError,
+    InvalidWEBUsageError,
+    ShortExcistError,
+)
 from .forms import URLForm
 from .models import URLMap
 
 
 NO_ID_MESSAGE_ERROR = 'Указанный id не найден'
 INDEX_PAGE = 'index.html'
+SHORT_EXIST_MESSAGE_ERROR = 'Имя {} уже занято!'
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -28,7 +33,7 @@ def index_view() -> Tuple[Any, HTTPStatus]:
                     URLMap.save(
                         original=form.original_link.data,
                         short=form.custom_id.data,
-                        full_validation=True,
+                        skip_validation=True,
                     ).short
                 ),
             ),
@@ -36,7 +41,9 @@ def index_view() -> Tuple[Any, HTTPStatus]:
         )
     except InvalidWEBUsageError as error:
         flash(str(error))
-        return render_template(INDEX_PAGE, form=form)
+    except ShortExcistError:
+        flash(SHORT_EXIST_MESSAGE_ERROR)
+    return render_template(INDEX_PAGE, form=form)
 
 
 @app.route('/<string:short>')
