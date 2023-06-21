@@ -65,11 +65,11 @@ class URLMap(db.Model):
             if URLMap.get(short):
                 if full_validation:
                     raise InvalidWEBUsageError(
-                        SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR.format(short)
+                        SHORT_EXIST_MESSAGE_ERROR.format(short)
                     )
                 else:
                     raise InvalidWEBUsageError(
-                        SHORT_EXIST_MESSAGE_ERROR.format(short)
+                        SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR.format(short)
                     )
         else:
             short = URLMap.generate_short()
