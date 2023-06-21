@@ -49,9 +49,9 @@ class URLMap(db.Model):
         raise InvalidWEBUsageError(SHORT_GENERATE_ERROR_MESSAGE)
 
     @staticmethod
-    def save(original, short, check=False):
+    def save(original, short, full_validation=False):
         """Метод сохранения объекта в БД."""
-        if not check:
+        if not full_validation:
             if len(original) > ORIGINAL_LINK_LENGTH:
                 raise InvalidWEBUsageError(LENGTH_URL_MESSAGE_ERROR)
             if not url(original):
@@ -61,20 +61,17 @@ class URLMap(db.Model):
                     raise InvalidWEBUsageError(SHORT_ERROR_MESSAGE)
                 if not re.match(VALID_SHORT_PATTERN, short):
                     raise InvalidWEBUsageError(SHORT_ERROR_MESSAGE)
-                if URLMap.get(short):
+        if short:
+            if URLMap.get(short):
+                if full_validation:
                     raise InvalidWEBUsageError(
                         SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR.format(short)
                     )
-            else:
-                short = URLMap.generate_short()
+                raise InvalidWEBUsageError(
+                    SHORT_EXIST_MESSAGE_ERROR.format(short)
+                )
         else:
-            if short:
-                if URLMap.get(short):
-                    raise InvalidWEBUsageError(
-                        SHORT_EXIST_MESSAGE_ERROR.format(short)
-                    )
-            else:
-                short = URLMap.generate_short()
+            short = URLMap.generate_short()
         url_map = URLMap(original=original, short=short)
         db.session.add(url_map)
         db.session.commit()

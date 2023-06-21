@@ -24,16 +24,11 @@ def add_link():
         raise InvalidAPIUsageError(EMPTY_URL_ERROR_MESSAGE)
     custom_id = data.get('custom_id')
     try:
-        url_map = URLMap.save(original, custom_id)
+        return jsonify(
+            URLMap.save(original, custom_id).to_dict()
+        ), HTTPStatus.CREATED
     except InvalidWEBUsageError as error:
-        if 'занято' in str(error):
-            raise InvalidAPIUsageError(
-                SHORT_EXIST_MESSAGE_ERROR.format(custom_id)
-            )
         raise InvalidAPIUsageError(str(error))
-    return jsonify(
-        url_map.to_dict()
-    ), HTTPStatus.CREATED
 
 
 @app.route('/api/id/<string:short>/', methods=['GET'])

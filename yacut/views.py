@@ -20,24 +20,23 @@ def index_view() -> Tuple[Any, HTTPStatus]:
     if not form.validate_on_submit():
         return render_template(INDEX_PAGE, form=form)
     try:
-        url_map = URLMap.save(
-            original=form.original_link.data,
-            short=form.custom_id.data,
-            check=True,
+        return(
+            render_template(
+                INDEX_PAGE,
+                form=form,
+                short_link=URLMap.full_short(
+                    URLMap.save(
+                        original=form.original_link.data,
+                        short=form.custom_id.data,
+                        full_validation=True,
+                    ).short
+                ),
+            ),
+            HTTPStatus.OK,
         )
     except InvalidWEBUsageError as error:
         flash(str(error))
         return render_template(INDEX_PAGE, form=form)
-    return(
-        render_template(
-            INDEX_PAGE,
-            form=form,
-            short_link=URLMap.full_short(
-                url_map.short
-            ),
-        ),
-        HTTPStatus.OK,
-    )
 
 
 @app.route('/<string:short>')
