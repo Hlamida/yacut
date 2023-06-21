@@ -23,14 +23,15 @@ def index_view() -> Tuple[Any, HTTPStatus]:
     form = URLForm()
     if not form.validate_on_submit():
         return render_template(INDEX_PAGE, form=form)
+    short = form.custom_id.data
     try:
         url_map = URLMap.save(
             original=form.original_link.data,
-            short=form.custom_id.data,
+            short=short,
             skip_validation=True,
         )
     except ShortExcistError:
-        flash(SHORT_EXIST_MESSAGE_ERROR.format(url_map.short))
+        flash(SHORT_EXIST_MESSAGE_ERROR.format(short))
         return render_template(INDEX_PAGE, form=form)
     return(
         render_template(
