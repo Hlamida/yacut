@@ -67,9 +67,10 @@ class URLMap(db.Model):
                     raise InvalidWEBUsageError(
                         SHORT_EXIST_ALTERNATIVE_MESSAGE_ERROR.format(short)
                     )
-                raise InvalidWEBUsageError(
-                    SHORT_EXIST_MESSAGE_ERROR.format(short)
-                )
+                else:
+                    raise InvalidWEBUsageError(
+                        SHORT_EXIST_MESSAGE_ERROR.format(short)
+                    )
         else:
             short = URLMap.generate_short()
         url_map = URLMap(original=original, short=short)
