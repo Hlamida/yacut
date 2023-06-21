@@ -6,7 +6,6 @@ from flask import Response, flash, redirect, render_template
 from . import app
 from .error_handlers import (
     InvalidAPIUsageError,
-    InvalidWEBUsageError,
     ShortExcistError,
 )
 from .forms import URLForm
